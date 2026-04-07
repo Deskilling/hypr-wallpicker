@@ -18,31 +18,148 @@ This tool adheres to the Unix philosophy—it handles the visual selection of wa
 
 ## Dependencies
 
-To build and run the tool, you may need:
+### Core / Build Dependencies
 
-* `raylib` (for UI rendering)
-* `awww` (for Wayland wallpaper drawing and transitions)
-* `matugen` (optional, for dynamic system color generation)
+To build `hypr-wallpicker`, you need:
 
-## Build & Run
+- `gcc`
+- `raylib`
 
-Currently, the build process is as raw as it gets (a proper build system is on the roadmap).
+`hypr-wallpicker` links against your system `raylib` library.
 
-Use `gcc` to compile:
+---
+
+### Runtime Behavior
+
+`hypr-wallpicker` itself only handles wallpaper selection and thumbnail caching.
+
+When a wallpaper is selected, it:
+
+1. checks for an optional user hook at  
+   `~/.config/hypr-wallpicker/apply-wallpaper.sh`
+2. if no hook is present, it falls back to the built-in apply behavior
+
+The built-in fallback is currently **Hyprland/Wayland-oriented**.
+
+---
+
+### Built-in Fallback Runtime Integrations (No User Hook)
+
+If no user hook is installed, the built-in fallback may use:
+
+- `awww` *(optional)* — used for animated wallpaper transitions **if available**
+- `matugen` *(optional)* — generate colors from the selected wallpaper
+- `hyprctl` *(optional)* — reload Hyprland
+- `makoctl` *(optional)* — reload Mako notifications
+- `~/.config/waybar/scripts/reload-waybar.sh` *(optional user script)* — reload Waybar
+
+> The built-in fallback will still run without `awww`, but no animated wallpaper transition will occur unless `awww` is installed.
+
+---
+
+### Wayland / Hyprland Example Hook
+
+If you use the provided Wayland example hook, these are the expected runtime tools:
+
+- `awww` **(required)** — apply wallpaper + transition
+- `matugen` *(optional)* — generate colors from the selected wallpaper
+- `hyprctl` *(optional)* — reload Hyprland
+- `makoctl` *(optional)* — reload Mako notifications
+- `~/.config/waybar/scripts/reload-waybar.sh` *(optional user script)* — reload Waybar
+
+> The provided Wayland example hook explicitly requires `awww`.
+
+---
+
+### X11 / i3 Example Hook
+
+If you use the provided X11 example hook, the exact runtime tools depend on your desktop setup and how you choose to manage wallpapers, theming, and bar reloads.
+
+Common options include:
+
+- `i3wm` **(required)**
+- `feh` or `nitrogen` — set wallpaper on X11
+- `wal` / `pywal` *(optional)* — generate colors from the selected wallpaper
+- `i3-msg` *(optional)* — reload or restart i3-managed components
+- `polybar-msg` *(optional)* — reload Polybar if used
+- custom user scripts for compositor, bar, or theme reloads
+
+> The X11 example hook is a starting point and may need adjustments depending on your environment.
+> (only supported environment right now is i3)
+
+## Build, Install & Run
+
+### Build
+
+Build the release binary:
+
 ```bash
-gcc main.c -o wallpicker -O2 -Wall -lraylib -lm -ldl -lpthread -lrt -lX11
+make
 ```
-Run the executable:
-```bash
-./wallpicker
-```
-The program defaults to `~/Pictures/wallpapers/` if no argument is provided. To specify a custom directory, pass the path as an argument:
+---
+
+### Install
+
+Install the binary to `usr/local/bin`:
 
 ```bash
-./wallpicker [path/to/directory]
+sudo make install
 ```
-For example:
+
+Remove the installed binary:
+
 ```bash
-./wallpicker ~/Pictures/custom/my_wallpapers
+sudo make uninstall
 ```
-The first time you use this program, it will generate cached files of wallpapers, which may take a short time. Please be patient.
+
+Perform a clean rebuild and reinstall:
+
+```bash
+sudo make reinstall
+```
+---
+
+### Run
+
+Run with the default wallpaper directory at `~Pictures/wallpapers`:
+
+```bash
+wallpicker
+```
+
+Run with a custom wallpaper directory:
+
+```bash
+wallpicker /path/to/wallpapers
+```
+The first time you use this program, it will generate cached files of wallpapers, which may take a short time. Please be 
+patient.
+
+---
+
+### Example hook scripts
+
+Example hook scripts are provided in:
+
+`scripts/` in project root.
+
+To use one, copy it to the runtime hook path expected by `hypr-wallpicker`:
+
+`~/config/hypr-wallpicker/apply-wallpaper.sh`
+
+Wayland / Hyprland example:
+
+```bash
+mkdir -p ~/.config/hypr-wallpicker
+cp scripts/apply-wallpaper-wayland.example.sh ~/.config/hypr-wallpicker/apply-wallpaper.sh
+chmod +x ~/.config/hypr-wallpicker/apply-wallpaper.sh
+```
+X11 / i3 example:
+
+```bash
+mkdir -p ~/.config/hypr-wallpicker
+cp scripts/apply-wallpaper-x11.example.sh ~/.config/hypr-wallpicker/apply-wallpaper.sh
+chmod +x ~/.config/hypr-wallpicker/apply-wallpaper.sh
+```
+
+
