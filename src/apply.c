@@ -1,3 +1,5 @@
+#define _POSIX_C_SOURCE 200809L
+
 #include "apply.h"
 
 #include <limits.h>
@@ -18,12 +20,12 @@ static bool RunUserHook(const char *wall_path, const char *relX_str,
   }
 
   char hook_path[PATH_MAX];
-  snprintf(hook_path, sizeof(hook_path),
+  int n = snprintf(hook_path, sizeof(hook_path),
            "%s/.config/hypr-wallpicker/apply-wallpaper.sh", home);
 
-  if (access(hook_path, X_OK) != 0) {
+  if (n < 0 || (size_t)n >= sizeof(hook_path)) {
     return false;
-  }
+}
 
   execl("/bin/sh", "sh", hook_path, wall_path, relX_str, relY_str, NULL);
 
@@ -40,16 +42,21 @@ static bool RunBuiltinFallback(const char *wall_path, const char *relX_str,
       "    --transition-step 30 --transition-duration 1.2 "
       "    --transition-fps 60; "
       "fi; "
-      "mkdir -p \"$HOME/.config/hypr\"; "
-      "ln -sfn \"$1\" \"$HOME/.config/hypr/current_wallpaper.png\"; "
-      "if command -v matugen >/dev/null 2>&1; then "
-      "  matugen image \"$1\" --source-color-index 0; "
-      "fi; "
-      "command -v makoctl >/dev/null 2>&1 && makoctl reload; "
-      "command -v hyprctl >/dev/null 2>&1 && hyprctl reload; "
-      "if [ -x \"$HOME/.config/waybar/scripts/reload-waybar.sh\" ]; then "
-      "  \"$HOME/.config/waybar/scripts/reload-waybar.sh\"; "
-      "fi";
+
+  //        ***LEGACY FALLBACK LEFT IN FOR NOW***
+
+      /*    "mkdir -p \"$HOME/.config/hypr\"; "
+            "ln -sfn \"$1\" \"$HOME/.config/hypr/current_wallpaper.png\"; "
+            "if command -v matugen >/dev/null 2>&1; then "
+            "  matugen image \"$1\" --source-color-index 0; "
+            "fi; "
+            "command -v makoctl >/dev/null 2>&1 && makoctl reload; "
+            "command -v hyprctl >/dev/null 2>&1 && hyprctl reload; "
+            "if [ -x \"$HOME/.config/waybar/scripts/reload-waybar.sh\" ]; then "
+            "  \"$HOME/.config/waybar/scripts/reload-waybar.sh\"; "
+            "fi"
+      */
+      ;
 
   execl("/bin/sh", "sh", "-c", script, "--", wall_path, relX_str, relY_str,
         NULL);
