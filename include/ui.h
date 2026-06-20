@@ -3,6 +3,6 @@
 
 #include "app.h"
 
-SelectionResult RunUI(App *app, const AppConfig *config);
+SelectionResult RunUI(App* app, const AppConfig* config);
 
 #endif

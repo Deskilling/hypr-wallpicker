@@ -4,8 +4,8 @@
 #include "app.h"
 #include <stdbool.h>
 
-bool InitWallpaperResources(App *app);
-bool LoadWallpapers(App *app);
-void UnloadWallpapers(App *app);
+bool InitWallpaperResources(App* app);
+bool LoadWallpapers(App* app);
+void UnloadWallpapers(App* app);
 
 #endif

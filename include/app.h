@@ -16,60 +16,56 @@
 #define DEFAULT_WINDOW_HEIGHT 1080
 
 typedef struct {
-  Texture2D tex;
-  char *filename;
-  float currentScale;
-  float currentColor;
-  // Cached render coordinates to avoid redundant layout calculations in the
-  // render loop
-  float render_x;
-  float render_y;
+	Texture2D tex;
+	char* filename;
+	float currentScale;
+	float currentColor;
+	// Cached render coordinates to avoid redundant layout calculations in the
+	// render loop
+	float render_x;
+	float render_y;
 } Wallpaper;
 
 typedef struct {
-  bool valid;
-  char *full_target_path;
-  float rel_x;
-  float rel_y;
+	bool valid;
+	char* full_target_path;
+	float rel_x;
+	float rel_y;
 } SelectionResult;
 
-typedef enum {
-  SESSION_BACKEND_UNKNOWN = 0,
-  SESSION_BACKEND_WAYLAND,
-  SESSION_BACKEND_X11
-} SessionBackend;
+typedef enum { SESSION_BACKEND_UNKNOWN = 0, SESSION_BACKEND_WAYLAND, SESSION_BACKEND_X11 } SessionBackend;
 
 typedef struct {
-  const char *wallpaper_dir;
-  int window_width;
-  int window_height;
-  int cols;
-  float spacing;
-  float angle;
-  SessionBackend backend;
+	const char* wallpaper_dir;
+	int window_width;
+	int window_height;
+	int cols;
+	float spacing;
+	float angle;
+	SessionBackend backend;
 } AppConfig;
 
 typedef struct {
-  char *wp_dir;
-  char cache_dir[PATH_MAX];
+	char* wp_dir;
+	char cache_dir[PATH_MAX];
 
-  Wallpaper *wallpapers;
-  int wp_count;
-  int capacity;
+	Wallpaper* wallpapers;
+	int wp_count;
+	int capacity;
 
-  Image hex_mask;
-  int img_size;
+	Image hex_mask;
+	int img_size;
 
-  float scroll_offset;
-  float target_scroll_offset;
-  float angle;
+	float scroll_offset;
+	float target_scroll_offset;
+	float angle;
 } App;
 
-AppConfig AppConfigFromArgs(int argc, char **argv);
-int AppRun(const AppConfig *config);
+AppConfig AppConfigFromArgs(int argc, char** argv);
+int AppRun(const AppConfig* config);
 
 SessionBackend DetectSessionBackend(void);
-const char *SessionBackendName(SessionBackend backend);
+const char* SessionBackendName(SessionBackend backend);
 
-void FreeSelectionResult(SelectionResult *result);
+void FreeSelectionResult(SelectionResult* result);
 #endif

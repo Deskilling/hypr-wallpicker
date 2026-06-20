@@ -3,6 +3,6 @@
 
 #include <stdbool.h>
 
-bool ApplyWallpaper(const char *wall_path, float rel_x, float rel_y);
+bool ApplyWallpaper(const char* wall_path, float rel_x, float rel_y);
 
 #endif
