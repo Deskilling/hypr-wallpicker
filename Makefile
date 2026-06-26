@@ -8,7 +8,7 @@ LDFLAGS =
 LDLIBS = -lraylib -lm -ldl -lpthread -lrt
 
 SRC = src/main.c src/app.c src/apply.c src/fs.c src/wallpaper.c src/ui.c src/render.c src/hexagon.c
-TARGET = wallpicker
+TARGET = awallpicker
 
 PREFIX ?= /usr/local
 BINDIR ?= $(PREFIX)/bin

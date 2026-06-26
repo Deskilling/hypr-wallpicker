@@ -1,5 +1,5 @@
 {
-  description = "";
+  description = "wallpaper picker";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
@@ -19,8 +19,8 @@
         pkgs = nixpkgs.legacyPackages.${system};
       in
       {
-        packages.wallpicker = pkgs.stdenv.mkDerivation {
-          pname = "hypr-wallpicker";
+        packages.awallpicker = pkgs.stdenv.mkDerivation {
+          pname = "awallpicker";
           version = "0.4.0";
           src = ./.;
 
@@ -39,21 +39,21 @@
           '';
 
           meta = {
-            description = "";
+            description = "wallpaper picker";
             license = pkgs.lib.licenses.mit;
             maintainers = [
-              ""
+              "Deskilling"
             ];
 
             platforms = [
               "x86_64-linux"
               "aarch64-linux"
             ];
-            mainProgram = "wallpicker";
+            mainProgram = "awallpicker";
           };
         };
 
-        packages.default = self.packages.${system}.wallpicker;
+        packages.default = self.packages.${system}.awallpicker;
 
         devShells.default = pkgs.mkShell {
           buildInputs = with pkgs; [

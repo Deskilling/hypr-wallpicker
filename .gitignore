@@ -1,4 +1,4 @@
-wallpicker
+awallpicker
 *.o
 .cache/
 compile_commands.json
